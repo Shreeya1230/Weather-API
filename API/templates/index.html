@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: times new roman;
+            text-align: center;
+            background-color: #f1ee8e;
+            color: #000000;
+            padding: 20px;
+            margin: 0;
+        }
+        h1 {
+            color: #000000;
+            margin-bottom: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input {
+            padding: 8px;
+            font-size: 16px;
+            width: 220px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 8px 16px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 23px;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Weather App</h1>
+    <form id="weatherForm">
+        <input type="text" id="city" placeholder="Enter city" required>
+        <button type="submit">Get Weather</button>
+    </form>
+    <div id="result" class="result"></div>
+
+    <script>
+        document.getElementById("weatherForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const city = document.getElementById("city").value;
+
+
+            fetch(`/weather?city=${city}`)
+                .then(response => response.json())
+                .then(data => {
+                    const resultDiv = document.getElementById("result");
+                    if (data.error) {
+                        resultDiv.innerHTML = `<p class="error">${data.error}</p>`;
+                    } else {
+                        resultDiv.innerHTML = `
+                            <p><strong>${data.city}</strong></p>
+                            <p>Temperature: ${data.temperature}°C</p>
+                            <p>${data.description}</p>
+                            <p>Humidity: ${data.humidity}%</p>
+                            <p>Wind: ${data.wind_speed} m/s</p>
+                        `;
+                    }
+                })
+                .catch(() => {
+                    document.getElementById("result").innerHTML = `<p class="error">Error fetching data.</p>`;
+                });
+        });
+    </script>
+</body>
+</html>
